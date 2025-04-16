@@ -1,0 +1,207 @@
+# Set Screen All White;
+
+# Section 0 On;
+INSERT 00001;
+REG M;
+
+INSERT 11111;
+REG L;
+DISP;
+
+
+
+# Section 1 On;
+INSERT 00010;
+REG M;
+
+INSERT 11111;
+REG L;
+DISP;
+
+
+
+# Section 2 On;
+INSERT 00011;
+REG M;
+
+INSERT 11111;
+REG L;
+DISP;
+
+
+
+# Section 3 On;
+INSERT 00100;
+REG M;
+
+INSERT 11111;
+REG L;
+DISP;
+
+
+
+# Section 4 On;
+INSERT 00101;
+REG M;
+
+INSERT 11111;
+REG L;
+DISP;
+
+
+
+# Section 5 On;
+INSERT 00110;
+REG M;
+
+INSERT 11111;
+REG L;
+DISP;
+
+
+
+# Section 6 On;
+INSERT 00111;
+REG M;
+
+INSERT 11111;
+REG L;
+DISP;
+
+
+
+# Section 7 On;
+INSERT 01000;
+REG M;
+
+INSERT 11111;
+REG L;
+DISP;
+
+
+# Section 8 On;
+INSERT 01001;
+REG M;
+
+INSERT 11111;
+REG L;
+DISP;
+
+
+
+# Section 9 On;
+INSERT 01010;
+REG M;
+
+INSERT 11111;
+REG L;
+DISP;
+
+
+
+# Section 10 On;
+INSERT 01011;
+REG M;
+
+INSERT 11111;
+REG L;
+DISP;
+
+
+
+# Section 11 On;
+INSERT 01100;
+REG M;
+
+INSERT 11111;
+REG L;
+DISP;
+
+
+
+# Section 12 On;
+INSERT 01101;
+REG M;
+
+INSERT 11111;
+REG L;
+DISP;
+
+
+
+# Section 13 On;
+INSERT 01110;
+REG M;
+
+INSERT 11111;
+REG L;
+DISP;
+
+
+
+# Section 14 On;
+INSERT 01111;
+REG M;
+
+INSERT 11111;
+REG L;
+DISP;
+
+
+
+# Section 15 On;
+INSERT 10000;
+REG M;
+
+INSERT 11111;
+REG L;
+DISP;
+
+
+
+# Section 16 On;
+INSERT 10001;
+REG M;
+
+INSERT 11111;
+REG L;
+DISP;
+
+
+
+# Section 17 On;
+INSERT 10010;
+REG M;
+
+INSERT 11111;
+REG L;
+DISP;
+
+
+# Section 18 On;
+INSERT 10011;
+REG M;
+
+INSERT 11111;
+REG L;
+DISP;
+
+
+
+# Section 19 On;
+INSERT 10100;
+REG M;
+
+INSERT 11111;
+REG L;
+DISP;
+
+
+
+# Enable Screen;
+INSERT 00000;
+REG M;
+
+INSERT 10000;
+REG L;
+DISP;
