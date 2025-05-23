@@ -213,7 +213,7 @@ class Computer:
     
     def load_display(self):
         output = ''
-        if self.__DISP[0] == '1' or self.__DISP[1] == '1' or self.__DISP[0] == '1':
+        if self.__DISP[0] == '1' or self.__DISP[1] == '1' or self.__DISP[2] == '1':
             output = '=' * 21
             output += "\n"
             

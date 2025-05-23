@@ -1,0 +1,7 @@
+(char) p = 'i';
+
+Print.enable("Text");
+Print(p);
+
+p = p & 3; 
+Print(p);
