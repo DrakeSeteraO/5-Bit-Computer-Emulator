@@ -1,10 +1,25 @@
+"""File compiles 5 bit language to 5 bit assembly code
+
+Author: Drake Setera
+
+Date: 6/9/2025
+
+Version: 2.2.0
+"""
+
+
+
 from CodeLanguageBackEnd.Variable import *
 from CodeLanguageBackEnd.Print import *
 from CodeLanguageBackEnd.Mathematics import *
 
+
+
 class CompiledCode:
-    
-    
+    """Class converts 5 bit language of inputted file to a new file containing 5 bit assembly code
+    """
+
+
     def __init__(self, file_name: str): 
         self.characters = {' ':'00', '.':'27','?':'28','!':'29',',':'30','|':'31'}
         self.variables: dict[str, Variable] = dict()
@@ -13,23 +28,28 @@ class CompiledCode:
         self.taken_memory = "0" * (2 ** 10)
         self.var_sizes = {'int':1,'char':1,'bool':1,'bin':1}
         self.p = Print()
-        
-        
+
         if file_name.endswith(".5bl"):
             self.convert_code(file_name)
         else:
             print("Wrong File Type")
             raise TypeError
-    
-    
-    
+
+
+
     def convert_code(self, file_name: str):
+        """Converts the 5 Bit Language code into a 5 Bit Assembly file
+
+        Args:
+            file_name (str): 5 Bit Language file to compile (ends in .5bl)
+        """
+
+
         code = self.get_code(file_name)
         instructions = code.split(";")
         self.pre_math(instructions)
         assembly = self.do_instructions(instructions)
-        print(self.taken_memory)
-        
+
         try:
             file_name = file_name.removesuffix('l')
             file_name += 'a'
@@ -38,26 +58,45 @@ class CompiledCode:
             file.close()
         except:
             print("Error creating assembly file")
-        
-        
-    
-    
+
+
+
     def get_code(self, file_name: str) -> str:
+        """Gets 5 Bit Language code and formats it
+
+        Args:
+            file_name (str): 5 Bit Language file to compile (ends in .5bl)
+
+        Returns:
+            str: Formatted 5 Bit Language code
+        """
+
+
         code = ''
         try:
             file_add = r"Code/5BitLanguage/"
             file = open(file_add + f"{file_name}")
             code = file.read().replace(' ', '').replace('\n','').lower()
             file.close()
-        except:
+        except Exception:
             print("Couldn't find file")
-            
+
         code = self.convert_char(code)
         return code
-    
-    
-    
+
+
+
     def convert_char(self, code: str) -> str:
+        """Converts Char characters into their respective integer values before compilation
+
+        Args:
+            code (str): Formatted 5 Bit Language code
+
+        Returns:
+            str: Formatted 5 Bit language code with characters integer value
+        """
+
+
         c = 0
         while c < len(code):
             if code[c] == "'":
@@ -67,20 +106,40 @@ class CompiledCode:
                     c += 3
             c +=1
         return code
-                
-    
-    
+
+
+
     def convert_to_char_num(self, char: str) -> str:
+        """Converts selected character to its integer value
+
+        Args:
+            char (str): Character to be converted
+
+        Returns:
+            str: String of the character's integer value
+        """
+
+
         char = char.upper()
-        val = '00'
         if 65 <= ord(char) <= 90:
             return str(ord(char)).zfill(2)
         else:
             return self.characters[char]
-    
-    
-    
+
+
+
     def get_string(self, code: str, index: int) -> list[str, int]:
+        """Attempts to retrieve the string value
+
+        Args:
+            code (str): Current instruction
+            index (int): Index to start string at
+
+        Returns:
+            list[str, int]: String value, Index to continue at
+        """
+
+
         output = ''
         index += 1
         cur_char = code[index]
@@ -92,59 +151,99 @@ class CompiledCode:
         except Exception:
             return '', 0
         return output, index + 1
-    
-    
-    
+
+
+
     def do_instructions(self, instructions: list[str]) -> str:
+        """Iterates through every 5 Bit Language instruction and converts it to assembly
+
+        Args:
+            instructions (list[str]): List of 5 Bit Language instructions
+
+        Returns:
+            str: Assembly version of the 5 Bit Language code
+        """
+
+
         self.code_num = 0
         assembly = ''
         for instruction in instructions:
             if len(instruction) > 0:
                 assembly += self.perform_instruction(instruction)
-                    
+
             self.code_num += 1
         return assembly
-    
-    
-    
-    def perform_instruction(self, instruction: str):
+
+
+
+    def perform_instruction(self, instruction: str) -> str:
+        """Converts instruction into assembly
+
+        Args:
+            instruction (str): 5 Bit Language instruction
+
+        Returns:
+            str: Assembly to perform instruction
+        """
+
+
         if instruction[0] == '(':
             return self.declare_variable(instruction)
-        
+
         elif instruction.startswith("print"):
             return self.print(instruction)
-        
+
         elif instruction[0] == '~':
             return instruction[1:]
-        
+
         elif instruction[0].isalpha():
             math = self.maths[self.code_num]
             var_type, var_name = self.get_var_info(instruction) 
             return self.variables[var_name].set_var_to_assembly(math.get_assembly(self.variables))
-    
- 
-    
-    def declare_variable(self, instruction: str):
+
+
+
+    def declare_variable(self, instruction: str) -> str:
+        """Declares a new variable
+
+        Args:
+            instruction (str): 5 Bit Language instruction that is creating a new variable
+
+        Returns:
+            str: Assembly to create new variable
+        """
+
+
         var_type, var_name = self.get_var_info(instruction)
         size = self.var_sizes[var_type]
         address = self.find_free_memory(size)
         self.create_var(var_type, address, var_name)
         self.update_memory_taken(address, size)
-        
+
         if instruction.find("=") == -1:
             return ''
         else:
             parts = instruction.split("=")
             return self.set_var(var_name)
-        
-        
-    
+
+
+
     def get_var_info(self, instruction: str) -> list[str,str]:
+        """Gets the selected variables name and type 
+
+        Args:
+            instruction (str): 5 Bit Language instruction containing a variable
+
+        Returns:
+            list[str,str]: Variable name, Variable type
+        """
+
+
         index = 1
         var_type = ''
         if instruction[0] == '(':
             char = instruction[1]
-            
+
             while char != ')':
                 var_type += char
                 index += 1
@@ -152,63 +251,123 @@ class CompiledCode:
             index += 1
         else:
             index = 0
-        
+
         var_name = ''
         char = instruction[index]
         while char != '=' and index < len(instruction) - 1:
             var_name += char
             index += 1
             char = instruction[index]
-            
+
         return var_type, var_name
-        
-    
-    
+
+
+
     def find_free_memory(self, size: int) -> str:
+        """Finds free RAM memory to claim
+
+        Args:
+            size (int): Number of RAM addresses needed
+
+        Raises:
+            ValueError: Raised if there is no where to claim memory
+
+        Returns:
+            str: Starting RAM address of free memory
+        """
+
+
         for loc in range(len(self.taken_memory)):
             if self.valid_loc(loc, size):
                 return bin(loc).removeprefix("0b").zfill(10)
         raise ValueError("Could not find memory")
-    
-    
-    
+
+
+
     def valid_loc(self, loc: int, size: int) -> bool:
+        """Tests to see if location in the RAM is empty
+
+        Args:
+            loc (int): Starting RAM address being checked
+            size (int): Number of RAM addresses that need to be open
+
+        Returns:
+            bool: _description_
+        """
+
+
         for i in range(size):
             if self.taken_memory[loc+i] == '1':
                 return False
         return True
-    
-    
-    
+
+
+
     def update_memory_taken(self, address: str, size: int):
+        """Updates the addresses in the RAM that are now taken
+
+        Args:
+            address (str): Starting RAM address being claimed
+            size (int): Number of addresses being claimed
+        """
+
+
         if size > 0:
             address = int(address, 2)
             self.taken_memory = self.taken_memory[:address] + ('1' * size) + self.taken_memory[(address+size-1):]
-    
-    
-    def create_var(self, type: str, address: str, name: str):
+
+
+
+    def create_var(self, var_type: str, address: str, name: str):
+        """Creates a new variable in the compiler
+
+        Args:
+            var_type (str): Variable type for the new variable
+            address (str): RAM address for the new variable
+            name (str): Name for the new variable
+        """
+
+
         var = None
-        if type == 'int':
+        if var_type == 'int':
             var = Int(address)
-        elif type == 'char':
+        elif var_type == 'char':
             var = Char(address)
-        elif type == 'bool':
+        elif var_type == 'bool':
             var = Bool(address)
-        elif type == 'bin':
+        elif var_type == 'bin':
             var == Bin(address)
-        
+
         self.variables[name] = var
-        
-        
-        
-    def set_var(self, var_name:str):
+
+
+
+    def set_var(self, var_name:str) -> str:
+        """Sets variable
+
+        Args:
+            var_name (str): Name of variable
+
+        Returns:
+            str: Assembly to set variable
+        """
+
+
         math = self.maths[self.code_num]
         return self.variables[var_name].set_var_to_assembly(math.get_assembly(self.variables))
-    
-    
-    
+
+
+
     def print(self, instruction: str) -> str:
-        
+        """Determines what Print action is being taken
+
+        Args:
+            instruction (str): 5 Bit Language instruction calling Print function
+
+        Returns:
+            str: Assembly perform instruction 
+        """
+
         if instruction == 'print.enable("text")':
             return self.p.enable('text')
         if instruction == 'print.enable("number")':
@@ -221,7 +380,7 @@ class CompiledCode:
             parts = instruction.split("(")
             vals = parts[1]
             vars = self.print_vars(vals)
-            
+
             val1 = ''
             if vars[0].startswith("'"):
                 val1 = vars[1:3]
@@ -229,23 +388,32 @@ class CompiledCode:
                 val1 = int(vars[0])
             else:
                 val1 = self.variables[vars[0]]
-            
+
             if len(vars) == 1:
                 return self.p.insert_val(val1)
             else:
-                
+
                 val2 = ''
             if vars[1].isdigit():
                 val2 = int(vars[1])
             else:
                 val2 = self.variables[vars[1]]
-            
+
             return self.p.insert_val(val1, val2)
-                
-                
-    
-    
+
+
+
     def print_vars(self, param:str) -> list[str]:
+        """Determines what is being printed to the screen
+
+        Args:
+            param (str): String of parameters being inputted into Print function
+
+        Returns:
+            list[str]: List of variable or values being inputted into Print function
+        """
+
+
         var1 = ''
         var2 = ''
         cur_char = param[0]
@@ -254,7 +422,7 @@ class CompiledCode:
             var1 += cur_char
             i += 1
             cur_char = param[i]
-        
+
         if cur_char == ')':
             return [var1]
         else:
@@ -265,10 +433,17 @@ class CompiledCode:
                 i += 1
                 cur_char = param[i]
             return [var1, var2]
-    
-    
-    
+
+
+
     def pre_math(self, instructions: list[str]):
+        """Calculates RAM needed to perform math instructions
+
+        Args:
+            instructions (list[str]): List of 5 Bit Language instructions
+        """
+
+
         math_size = 0
         for i in range(len(instructions)):
             if instructions[i].find("=") != -1:
@@ -280,9 +455,3 @@ class CompiledCode:
                     math_size = size
         loc = self.find_free_memory(math_size)
         self.update_memory_taken(loc, math_size)
-        
-        
-        
-        
-        
-            
