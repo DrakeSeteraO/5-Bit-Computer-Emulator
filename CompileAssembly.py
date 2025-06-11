@@ -2,9 +2,9 @@
 
 Author: Drake Setera
 
-Date: 6/9/2025
+Date: 6/11/2025
 
-Version: 2.2.0
+Version: 3.0.0
 """
 
 
@@ -18,19 +18,19 @@ class CompiledAssembly:
     """
 
 
-    def __init__(self, file_name: str):
+    def __init__(self, file_name: str, base: str = '5b'):
         self.__valid_input = re.compile(r'^[01]{5}$')
         self.assembly_to_binary_convert = {'USER':'10010','RCV':'10011','SEND':'10100','ADD':'10101','NOT':'10110','OR':'10111','XOR':'11000','>>':'11001','SET':'11010','GET':'11011','IF':'11100','POINT':'11101','DISP':'11110','WAIT':'11111'}
 
         if file_name.endswith('.5ba'):
-            self.convert_code(file_name)
+            self.convert_code(file_name, base)
         else:
             print('Wrong File Type')
             raise TypeError
 
 
 
-    def convert_code(self, file_name: str):
+    def convert_code(self, file_name: str, base: str):
         """Creates and inputs machine code based on inputted assembly
 
         Args:
@@ -44,10 +44,17 @@ class CompiledAssembly:
         print(errors)
         if error_amount == 0:
             try:
-                file_name = file_name.removesuffix('a')
-                file = open(f"Code\Binary\{file_name}", 'w')
-                file.write(binary)
-                file.close()
+                if base == '5b':
+                    file_name = file_name.removesuffix('a')
+                    file = open(f"Code/Binary/{file_name}", 'w')
+                    file.write(binary)
+                    file.close()
+                elif base == 'b5':
+                    file_name = file_name.removesuffix('5ba') + 'b5'
+                    file = open(f"Code/Base5/{file_name}", 'w')
+                    base5 = self.binary_to_base5(binary)
+                    file.write(base5)
+                    file.close()
             except:
                 print("Error creating binary file")
 
@@ -65,7 +72,7 @@ class CompiledAssembly:
 
 
         try:
-            file = open(f"Code\Assembly\{file_name}")
+            file = open(f"Code/Assembly/{file_name}")
             instructions = file.read().split(";")
             instructions = instructions[:-1]
 
@@ -169,6 +176,43 @@ class CompiledAssembly:
             return self.assembly_to_binary_convert[command]
         except:
             raise InvalidCommandError(command, line_num)
+    
+
+
+    def binary_to_base5(self, binary: str) -> str:
+        """Converts binary code to base 5
+
+        Args:
+            binary (str): Binary instructions
+
+        Returns:
+            str: Base 5 instructions
+        """
+
+
+        output = ''
+        for i in range(0, len(binary), 5):
+            output += self.convert_binary(binary[i:i+5])
+        return output
+
+
+
+    def convert_binary(self, binary: str) -> str:
+        """Converts binary instruction into base 5
+
+        Args:
+            binary (str): 5 bit instruction
+
+        Returns:
+            str: base 5 equivalent
+        """
+
+
+        val = int(binary,2)
+        if val < 10:
+            return str(val)
+        else:
+            return chr(val + 55)
 
 
 

@@ -2,9 +2,9 @@
 
 Author: Drake Setera
 
-Date: 6/9/2025
+Date: 6/11/2025
 
-Version: 2.2.0
+Version: 3.0.0
 """
 
 
@@ -368,13 +368,13 @@ class CompiledCode:
             str: Assembly perform instruction 
         """
 
-        if instruction == 'print.enable("text")':
+        if instruction in ['print.enable("text")','print.enable("t")']:
             return self.p.enable('text')
-        if instruction == 'print.enable("number")':
+        if instruction in ['print.enable("number")','print.enable("n")']:
             return self.p.enable('number')
-        if instruction == 'print.disable("text")':
+        if instruction in ['print.disable("text")','print.disable("t")']:
             return self.p.disable('text')
-        if instruction == 'print.disable("number")':
+        if instruction in ['print.disable("number")','print.disable("n")']:
             return self.p.disable('number')
         if instruction.startswith("print("):
             parts = instruction.split("(")

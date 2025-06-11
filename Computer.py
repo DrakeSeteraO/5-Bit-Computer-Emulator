@@ -2,9 +2,9 @@
 
 Author: Drake Setera
 
-Date: 6/7/2025
+Date: 6/11/2025
 
-Version: 2.1.0
+Version: 3.0.0
     
 """
 
@@ -20,10 +20,10 @@ class Computer:
     """
 
 
-
-    def __init__(self, ROM_file='machineCode.5b',hertz=0):
+    def __init__(self, ROM_file: str = 'machineCode.5b', hertz:int = 0, refresh_rate: int = 1):
         self.load_ROM(ROM_file)
         self.set_time_per_instruction(hertz)
+        self.__refresh_rate = refresh_rate
         self.__valid_input = re.compile(r'^[01]{5}$')
         self.__characters = {0:' ', 27:'.',28:'?',29:'!',30:',',31:'|'}
         self.__special_characters = {0:'0',1:'1',2:'2',3:'3',4:'4',5:'5',6:'6',7:'7',8:'8',9:'9',10:'+',11:'-',12:'*',13:'/',14:'=',15:'^',16:'#',17:'(',18:')',19:'&',20:"'",21:'"',22:'@',23:':',24:';',25:'<',26:'>',27:'%',28:'~',29:'[',30:']',31:'|'}
@@ -35,7 +35,7 @@ class Computer:
         """Loads ROM file's data into instructions to perform
 
         Args:
-            ROM_file (str): Binary file to execute, ends in .5b
+            ROM_file (str): Binary or Base 5 file to execute, ends in .5b or .b5
         """
 
 
@@ -50,6 +50,19 @@ class Computer:
                 file.close()
             except:
                 print("There was an error loading the ROM file")
+
+        elif ROM_file.endswith(".b5"):
+            try:
+                file = open(f"Code\Base5\{ROM_file}")
+
+                self.__instructions = list()
+                code = file.read()
+                for c in code:
+                    self.__instructions.append(self.base5_to_binary(c))
+                file.close()
+            except:
+                print("There was an error loading the ROM file")
+
         else:
             print("Wrong file type")
 
@@ -205,7 +218,7 @@ class Computer:
                 self.__RCV = self.__RCV ^ True
 
             elif instruction == 21:
-                self.__ALU = bin(int(self.__REG[0],2) + int(self.__REG[1],2)).removeprefix('0b').zfill(5)
+                self.__ALU = bin(int(self.__REG[0],2) + int(self.__REG[1],2)).removeprefix('0b').zfill(5)[-5:]
 
             elif instruction == 22:
                 temp = ''
@@ -285,18 +298,21 @@ class Computer:
     def load_display(self):
         """Displays data
         """
-        output = ''
-        if self.__DISP[0] == '1' or self.__DISP[1] == '1' or self.__DISP[2] == '1':
-            output = '=' * 21
-            output += "\n"
 
-        if self.__DISP[0] == '1':
-            output += self.load_screen()
-        if self.__DISP[1] == '1':
-            output += self.load_characters()
-        if self.__DISP[2] == '1':
-            output += f"\n{int(self.__DISP[155:],2)}"
-        print(output)
+
+        if self.__step % self.__refresh_rate == 0:
+            output = ''
+            if self.__DISP[0] == '1' or self.__DISP[1] == '1' or self.__DISP[2] == '1':
+                output = '=' * 21
+                output += "\n"
+
+            if self.__DISP[0] == '1':
+                output += self.load_screen()
+            if self.__DISP[1] == '1':
+                output += self.load_characters()
+            if self.__DISP[2] == '1':
+                output += f"\n{int(self.__DISP[155:],2)}"
+            print(output)
 
 
 
@@ -359,6 +375,8 @@ class Computer:
         Returns:
             list[str, bool]: character, is special character
         """
+
+
         if 0 < value < 27:
             return chr(64 + value), False
 
@@ -366,3 +384,21 @@ class Computer:
         if character ==  '|':
             return '', True
         return character, False
+
+
+
+    def base5_to_binary(self, base5: str) -> str:
+        """Converts Base 5 instruction into binary instruction
+
+        Args:
+            base5 (str): Base 5 instruction to convert
+
+        Returns:
+            str: Binary instruction equivalence
+        """
+
+
+        if base5.isdigit():
+            return bin(int(base5)).removeprefix('0b').zfill(5)
+        else:
+            return bin(ord(base5) - 55).removeprefix('0b').zfill(5)
