@@ -1,7 +1,4 @@
-(char) p = 'i';
+(int) p = -5;
 
-Print.enable("Text");
-Print(p);
-
-p = p & 3; 
+Print.enable("Number");
 Print(p);

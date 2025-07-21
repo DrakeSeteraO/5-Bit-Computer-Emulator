@@ -2,9 +2,9 @@
 
 Author: Drake Setera
 
-Date: 6/11/2025
+Date: 6/20/2025
 
-Version: 3.0.0
+Version: 3.1.0
 """
 
 
@@ -20,7 +20,7 @@ class CompiledCode:
     """
 
 
-    def __init__(self, file_name: str): 
+    def __init__(self, file_name: str = '', display_error: bool = True): 
         self.characters = {' ':'00', '.':'27','?':'28','!':'29',',':'30','|':'31'}
         self.variables: dict[str, Variable] = dict()
         self.maths: dict[int, MathTree] = dict()
@@ -28,12 +28,49 @@ class CompiledCode:
         self.taken_memory = "0" * (2 ** 10)
         self.var_sizes = {'int':1,'char':1,'bool':1,'bin':1}
         self.p = Print()
+        self.display_error = display_error
 
-        if file_name.endswith(".5bl"):
-            self.convert_code(file_name)
-        else:
-            print("Wrong File Type")
-            raise TypeError
+        if len(file_name) > 0:
+            if file_name.endswith(".5bl"):
+                self.convert_code(file_name)
+            else:
+                if self.display_error:
+                    print("Wrong File Type")
+                raise TypeError
+
+
+
+    def reset(self):
+        """Resets the CompiledCode object
+        """
+
+
+        self.variables: dict[str, Variable] = dict()
+        self.maths: dict[int, MathTree] = dict()
+        self.math_size = 0
+        self.taken_memory = "0" * (2 ** 10)
+        self.p = Print()
+        
+
+        
+    def convert_text_code(self, code: str) -> str:
+        """Converts String 5 Bit Language to String Assembly code
+
+        Args:
+            code (str): String 5 Bit Language code to convert
+
+        Returns:
+            str: String Assembly code
+        """
+
+
+        self.reset()
+        code = code.replace(' ', '').replace('\n','').lower()
+        code = self.convert_char(code)
+        instructions = code.split(";")
+        self.pre_math(instructions)
+        assembly = self.do_instructions(instructions)
+        return assembly
 
 
 
@@ -57,7 +94,8 @@ class CompiledCode:
             file.write(assembly)
             file.close()
         except:
-            print("Error creating assembly file")
+            if self.display_error:
+                print("Error creating assembly file")
 
 
 
@@ -79,7 +117,8 @@ class CompiledCode:
             code = file.read().replace(' ', '').replace('\n','').lower()
             file.close()
         except Exception:
-            print("Couldn't find file")
+            if self.display_error:
+                print("Couldn't find file")
 
         code = self.convert_char(code)
         return code
@@ -292,7 +331,7 @@ class CompiledCode:
             size (int): Number of RAM addresses that need to be open
 
         Returns:
-            bool: _description_
+            bool: Wether the location is valid in the RAM
         """
 
 

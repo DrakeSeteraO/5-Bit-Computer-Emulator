@@ -2,9 +2,9 @@
 
 Author: Drake Setera
 
-Date: 6/11/2025
+Date: 6/20/2025
 
-Version: 3.0.0
+Version: 3.1.0
 """
 
 
@@ -18,16 +18,36 @@ class CompiledAssembly:
     """
 
 
-    def __init__(self, file_name: str, base: str = '5b'):
+    def __init__(self, file_name: str = '', base: str = '5b', display_error: bool = True):
         self.__valid_input = re.compile(r'^[01]{5}$')
         self.assembly_to_binary_convert = {'USER':'10010','RCV':'10011','SEND':'10100','ADD':'10101','NOT':'10110','OR':'10111','XOR':'11000','>>':'11001','SET':'11010','GET':'11011','IF':'11100','POINT':'11101','DISP':'11110','WAIT':'11111'}
+        self.display_error = display_error
 
-        if file_name.endswith('.5ba'):
-            self.convert_code(file_name, base)
-        else:
-            print('Wrong File Type')
-            raise TypeError
+        if len(file_name) > 0:
+            if file_name.endswith('.5ba'):
+                self.convert_code(file_name, base)
+            else:
+                if self.display_error:
+                    print('Wrong File Type')
+                raise TypeError
 
+
+
+    def convert_text_code(self, code: str) -> str:
+        """Converts assembly code in string form into binary code in string form
+
+        Args:
+            code (str): String assembly code
+
+        Returns:
+            str: String binary code
+        """
+
+
+        assembly = self.get_assembly('', code)
+        binary, errors, error_amount = self.assembly_to_binary(assembly)
+        return binary
+        
 
 
     def convert_code(self, file_name: str, base: str):
@@ -41,7 +61,9 @@ class CompiledAssembly:
         assembly = self.get_assembly(file_name)
         binary, errors, error_amount = self.assembly_to_binary(assembly)
 
-        print(errors)
+        if self.display_error:
+            print(errors)
+            
         if error_amount == 0:
             try:
                 if base == '5b':
@@ -56,11 +78,12 @@ class CompiledAssembly:
                     file.write(base5)
                     file.close()
             except:
-                print("Error creating binary file")
+                if self.display_error:
+                    print("Error creating binary file")
 
 
 
-    def get_assembly(self, file_name: str) -> list[str]:
+    def get_assembly(self, file_name: str, text_code: str = '') -> list[str]:
         """Gets the assembly instructions from assembly file
 
         Args:
@@ -72,15 +95,22 @@ class CompiledAssembly:
 
 
         try:
-            file = open(f"Code/Assembly/{file_name}")
-            instructions = file.read().split(";")
-            instructions = instructions[:-1]
+            instructions = ''
+            if len(text_code) == 0:
+                file = open(f"Code/Assembly/{file_name}")
+                instructions = file.read().split(";")
+                instructions = instructions[:-1]
+            else:
+                instructions = text_code.split(";")
+                instructions = instructions[:-1]
+                
 
             for i in range(len(instructions)):
                 instructions[i] = instructions[i].replace(' ','').replace('\n','').upper()
             file.close()
         except:
-            print("Couldn't find file")
+            if self.display_error:
+                print("Couldn't find file")
         return instructions
 
 

@@ -1,10 +1,1 @@
-(int) cat = 21 + 1;
-(char) dog = 'a' + 'b';
-
-cat = cat + 3;
-
-Print.enable("Number");
-Print.enable("Text");
-
-Print(cat);
-Print(dog);
+(int) monicabarajas = 23 > 1;

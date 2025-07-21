@@ -1,0 +1,10 @@
+(int) dog = 9 + 10;
+dog = dog - 1;
+
+(char) cat = 'L';
+
+Print.enable("number");
+Print.enable("text");
+
+Print(dog);
+Print(cat);

@@ -2,14 +2,15 @@
 
 Author: Drake Setera
 
-Date: 6/11/2025
+Date: 6/20/2025
 
-Version: 3.0.0
+Version: 3.1.0
 """
 
 
 
 from CodeLanguageBackEnd.Variable import *
+from CodeLanguageBackEnd.Conditional import *
 
 
 
@@ -275,7 +276,7 @@ class Node:
 
         elif len(parts) == 1:
             equation = parts[0]
-            return self.determine_split(equation, ['+','-','*','/','|','&','^','!'])
+            return self.determine_split(equation, ['<:','>:','!:',':','<','>','+','-','*','/','|','&','^','!'])
 
 
 
@@ -290,6 +291,8 @@ class Node:
 
         if len(parts) == 1:
             self.var = parts[0]
+            if self.var == None:
+                self.var = '0'
 
         elif len(parts) == 3:
             self.left = Node(parts[0], var_type, address)
@@ -310,6 +313,8 @@ class Node:
         """
 
 
+        if len(val) == 0:
+            return "0"
         if val[0] == "'":
             return val[1:-1]
         if val.isalpha():
@@ -400,6 +405,23 @@ class Node:
             return OR(left, right, True)
         if self.symbol == '&':
             return AND(left, right, True)
+        if self.symbol == '^':
+            return XOR(left, right, True)
+        if self.symbol == '!':
+            return NOT(left, True)
+        if self.symbol == ':':
+            return EQUAL(left, right, True)
+        if self.symbol == '!:':
+            return NOT_EQUAL(left, right, True)
+        if self.symbol == '<':
+            return LESS_THAN(left, right, True)
+        if self.symbol == '>':
+            return GREATER_THAN(left, right, True)
+        if self.symbol == '<:':
+            return LESS_THAN_OR_EQUAL(left, right, True)
+        if self.symbol == '>:':
+            return GREATER_THAN_OR_EQUAL(left, right, True)
+
 
 
 
@@ -478,7 +500,7 @@ class MathTree:
         """
         print(self.root.get_tree())
 
-# n = MathTree("((1+2)-(1+1))+((1+2)+(3+4))", '0000000000', 'int')
+# n = MathTree("5!+3", '0000000000', 'int')
 # print(n.get_address_size())
-# print(n.get_assembly())
+# print(n.get_assembly({}))
 # n.print_tree()

@@ -2,9 +2,9 @@
 
 Author: Drake Setera
 
-Date: 6/11/2025
+Date: 6/20/2025
 
-Version: 3.0.0
+Version: 3.1.0
 """
 
 
@@ -13,13 +13,15 @@ class Compiled5Bit:
     """Class converts 5 bit machine code of inputted file to a new file containing Base 5 code and vise versa
     """
     
-    def __init__(self, file_name: str):
+    def __init__(self, file_name: str, display_error: bool = True):
+        self.display_error = display_error
         if file_name.endswith('.5b'):
             self.Binary_to_Base5(file_name)
         elif file_name.endswith('.b5'):
             self.Base5_to_Binary(file_name)
         else:
-            print('Wrong File Type')
+            if self.display_error:
+                print('Wrong File Type')
             raise TypeError
     
     
@@ -37,7 +39,8 @@ class Compiled5Bit:
             binary = file.read()
             file.close()
         except:
-            print("Couldn't find file")
+            if self.display_error:
+                print("Couldn't find file")
         
         
         base5 = ''
@@ -83,7 +86,8 @@ class Compiled5Bit:
             base5 = file.read()
             file.close()
         except:
-            print("Couldn't find file")
+            if self.display_error:
+                print("Couldn't find file")
         
         
         binary = ''

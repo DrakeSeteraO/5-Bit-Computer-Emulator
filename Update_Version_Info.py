@@ -16,7 +16,10 @@ def main():
         "CodeLanguageBackEnd/Conditional.py",
         "CodeLanguageBackEnd/Mathematics.py",
         "CodeLanguageBackEnd/Print.py",
-        "CodeLanguageBackEnd/Variable.py"]
+        "CodeLanguageBackEnd/Variable.py",
+        "UnitTests/ComputerUnitTest.py",
+        "UnitTests/CodeLanguageUnitTests/VariableUnitTest.py",
+        "UnitTests/CodeLanguageUnitTests/MathUnitTest.py"]
     
     for file in update_files:
         locations = find_locations(file, ["Date: ","Version: "])
