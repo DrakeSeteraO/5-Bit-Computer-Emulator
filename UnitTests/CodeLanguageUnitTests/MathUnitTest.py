@@ -13,7 +13,6 @@ import json
 import unittest
 from random import randint
 from math import floor
-from faker import Faker
 
 
 
@@ -30,7 +29,7 @@ from CompileCode import CompiledCode
 
 
 
-fake = Faker()
+variable_names = ['Dog', 'cAt', 'horse', 'BIRD']
 c = Computer(code = ' ', display_error= False)
 a = CompiledAssembly(display_error= False)
 l = CompiledCode(display_error= False)
@@ -51,7 +50,7 @@ class TestVariable(unittest.TestCase):
     
     def test_ADD(self):
         for _ in range(n):
-            var_name = fake.name().replace(' ','').lower()
+            var_name = variable_names[0]
             val1 = randint(0, 31)
             val2 = randint(0, 31)
             command = f"(int) {var_name} = {val1} + {val2};"
@@ -66,7 +65,7 @@ class TestVariable(unittest.TestCase):
     
     def test_OR(self):
         for _ in range(n):
-            var_name = fake.name().replace(' ','').lower()
+            var_name = variable_names[0]
             val1 = randint(0, 31)
             val2 = randint(0, 31)
             command = f"(int) {var_name} = {val1} | {val2};"
@@ -81,7 +80,7 @@ class TestVariable(unittest.TestCase):
     
     def test_AND(self):
         for _ in range(n):
-            var_name = fake.name().replace(' ','').lower()
+            var_name = variable_names[0]
             val1 = randint(0, 31)
             val2 = randint(0, 31)
             command = f"(int) {var_name} = {val1} & {val2};"
@@ -96,7 +95,7 @@ class TestVariable(unittest.TestCase):
     
     def test_XOR(self):
         for _ in range(n):
-            var_name = fake.name().replace(' ','').lower()
+            var_name = variable_names[0]
             val1 = randint(0, 31)
             val2 = randint(0, 31)
             command = f"(int) {var_name} = {val1} ^ {val2};"
@@ -125,7 +124,7 @@ class TestVariable(unittest.TestCase):
 
     def test_SUB(self):
         for _ in range(n):
-            var_name = fake.name().replace(' ','').lower()
+            var_name = variable_names[0]
             val1 = randint(0, 31)
             val2 = randint(0, 31)
             command = f"(int) {var_name} = {val1} - {val2};"
@@ -161,7 +160,7 @@ class TestVariable(unittest.TestCase):
         
     def test_NOT(self):
         for _ in range(n):
-            var_name = fake.name().replace(' ','').lower()
+            var_name = variable_names[0]
             val = randint(0, 31)
             command = f"(int) {var_name} = {val}!;"
             
@@ -175,7 +174,7 @@ class TestVariable(unittest.TestCase):
     
     def test_NOT_EQUAL(self):
         for _ in range(n):
-            var_name = fake.name().replace(' ','').lower()
+            var_name = variable_names[0]
             val1 = randint(0, 31)
             val2 = randint(0, 31)
             command = f"(int) {var_name} = {val1} !: {val2};"
@@ -193,7 +192,7 @@ class TestVariable(unittest.TestCase):
 
     def test_EQUAL(self):
        for _ in range(n):
-            var_name = fake.name().replace(' ','').lower()
+            var_name = variable_names[0]
             val1 = randint(0, 31)
             val2 = randint(0, 31)
             command = f"(int) {var_name} = {val1} : {val2};"
@@ -211,7 +210,7 @@ class TestVariable(unittest.TestCase):
 
     def test_LESS_THAN(self):
        for _ in range(n):
-            var_name = fake.name().replace(' ','').lower()
+            var_name = variable_names[0]
             val1 = randint(0, 15)
             val2 = randint(0, 15)
             command = f"(int) {var_name} = {val1} < {val2};"
@@ -229,7 +228,7 @@ class TestVariable(unittest.TestCase):
 
     def test_GREATER_THAN(self):
        for _ in range(n):
-            var_name = fake.name().replace(' ','').lower()
+            var_name = variable_names[0]
             val1 = randint(0, 15)
             val2 = randint(0, 15)
             command = f"(int) {var_name} = {val1} > {val2};"
@@ -245,27 +244,27 @@ class TestVariable(unittest.TestCase):
 
 
 
-    # def test_LESS_THAN_OR_EQUAL(self):
-    #    for _ in range(n):
-    #         var_name = fake.name().replace(' ','').lower()
-    #         val1 = randint(0, 15)
-    #         val2 = randint(0, 15)
-    #         command = f"(int) {var_name} = {val1} <: {val2};"
+    def test_LESS_THAN_OR_EQUAL(self):
+       for _ in range(n):
+            var_name = variable_names[0]
+            val1 = randint(0, 15)
+            val2 = randint(0, 15)
+            command = f"(int) {var_name} = {val1} <: {val2};"
             
-    #         self.run_code(command)
+            self.run_code(command)
             
-    #         expected = '00000'
-    #         if val1 <= val2:
-    #             expected = '00001'
+            expected = '00000'
+            if val1 <= val2:
+                expected = '00001'
 
-    #         error_msg = f"Problem with LESS THAN OR EQUAL. Command: {command} returned {c.RAM[5:10]}"
-    #         self.assertEqual(c.RAM[5:10], expected, error_msg)
+            error_msg = f"Problem with LESS THAN OR EQUAL. Command: {command} returned {c.RAM[5:10]}"
+            self.assertEqual(c.RAM[5:10], expected, error_msg)
     
     
     
     def test_GREATER_THAN_OR_EQUAL(self):
        for _ in range(n):
-            var_name = fake.name().replace(' ','').lower()
+            var_name = variable_names[0]
             val1 = randint(0, 15)
             val2 = randint(0, 15)
             command = f"(int) {var_name} = {val1} >: {val2};"

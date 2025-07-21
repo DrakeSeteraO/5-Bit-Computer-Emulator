@@ -92,12 +92,12 @@ def LESS_THAN(var_a: Variable, var_b: Variable, node = False) -> str:
 
 
 def GREATER_THAN(var_a: Variable, var_b: Variable, node = False) -> str:
-    return f"{SUB(var_a, var_b, node)} REG A; NOT; REG C; REG A; >>; REG C; REG A; >>; REG C; REG A; >>; REG C; REG A; >>; REG C;"
+    return f"{SUB(var_a, var_b, node)} REG A; NOT; REG C; REG A; INSERT 1; REG B; ADD; REG C; REG A; >>; REG C; REG A; >>; REG C; REG A; >>; REG C; REG A; >>; REG C;"
 
 
 
 def LESS_THAN_OR_EQUAL(var_a: Variable, var_b: Variable, node = False) -> str:
-    return LESS_THAN(var_a, get_var(var_b) + "REG A; INSERT 1; REG B; ADD; REG C;", node)
+    return f"{SUB(var_a, var_b, node)} REG A; INSERT 31; REG B; ADD; REG C; REG A; >>; REG C; REG A; >>; REG C; REG A; >>; REG C; REG A; >>; REG C;"
 
 
 
