@@ -68,8 +68,13 @@ class CompiledCode:
         code = code.replace(' ', '').replace('\n','').lower()
         code = self.convert_char(code)
         instructions = code.split(";")
+        
+        instructions = self.pre_import(instructions)
         self.pre_math(instructions)
+        self.instructions = instructions
+        
         assembly = self.do_instructions(instructions)
+        self.assembly = assembly
         return assembly
 
 
@@ -84,8 +89,13 @@ class CompiledCode:
 
         code = self.get_code(file_name)
         instructions = code.split(";")
+        
+        instructions = self.pre_import(instructions)
         self.pre_math(instructions)
+        self.instructions = instructions
+        
         assembly = self.do_instructions(instructions)
+        self.assembly = assembly
 
         try:
             file_name = file_name.removesuffix('l')
@@ -490,7 +500,48 @@ class CompiledCode:
                 var_type, var_name = self.get_var_info(temp[0])
                 self.maths[i] = MathTree(temp[1], '0000000000', var_type)
                 size = self.maths[i].get_address_size()
+                
                 if size > math_size:
                     math_size = size
         loc = self.find_free_memory(math_size)
         self.update_memory_taken(loc, math_size)
+
+
+
+    def pre_import(self, instructions: list[str]) -> list[str]:
+        """Imports code from other files
+
+        Args:
+            instructions (list[str]): 5 Bit Language instructions
+
+        Returns:
+            list[str]: 5 Bit language code that has been imported
+        """
+        
+        
+        output = instructions.copy()
+        
+        for i in range(len(instructions)):
+            
+            if instructions[i].startswith("import"):
+                file_name = instructions[i].removeprefix('import') + ".5bl"
+                compiled = CompiledCode(file_name)
+                import_code = compiled.instructions
+                
+                output.pop(i)
+                output = output[:i] + import_code + output[i:]
+
+        return output
+
+
+
+    def get_compiled_assembly(self):
+        """Returns the assembly of the compiled 5 Bit Language code
+
+        Returns:
+            str: assembly
+        """
+        
+        
+        return self.assembly
+    

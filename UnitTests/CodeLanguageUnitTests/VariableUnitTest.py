@@ -13,7 +13,7 @@ import json
 import unittest
 from random import randint
 from math import floor
-from faker import Faker
+
 
 
 
@@ -30,7 +30,7 @@ from CompileCode import CompiledCode
 
 
 
-fake = Faker()
+variable_names = ['Dog', 'cAt', 'horse', 'BIRD']
 c = Computer(code = ' ', display_error= False)
 a = CompiledAssembly(display_error= False)
 l = CompiledCode(display_error= False)
@@ -51,7 +51,7 @@ class TestVariable(unittest.TestCase):
     
     def test_declare_INT(self):
         for _ in range(n):
-            var_name = fake.name().replace(' ','').lower()
+            var_name = variable_names[0]
             val = randint(0, 31)
             command = f"(int) {var_name} = {val};"
             
@@ -64,7 +64,7 @@ class TestVariable(unittest.TestCase):
     
     def test_declare_CHAR(self):
         for _ in range(n):
-            var_name = fake.name().replace(' ','').lower()
+            var_name = variable_names[0]
             val = randint(0, 25)
             char = chr(val + 65)
             command = f"(char) {var_name} = '{char}';"
